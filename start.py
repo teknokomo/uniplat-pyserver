@@ -32,11 +32,15 @@ async def mining(request):
     await asyncio.sleep(0.1)
     starship_ore += randf() + 0.1
 
+async def heartbeat(request):
+    return web.Response(text="OK")
+
 app = web.Application()
 app.router.add_get('/', handle)
 app.router.add_post('/', root_post)
 app.router.add_get("/ore_data", ore_data)
 app.router.add_get("/mining", mining)
+app.router.add_get("/heartbeat", heartbeat)
 
 if __name__ == '__main__':
     web.run_app(app)
