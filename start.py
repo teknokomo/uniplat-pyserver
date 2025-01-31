@@ -11,18 +11,11 @@ from aiohttp import web
 
 import numpy as np
 from numpy.random import random as randf
+import time
 
 users = {}
 starship_ore = 10.
 station_ore = 0.
-
-async def handle(request): # Testing routines, to be deleted
-    return web.Response(text="Hello, world")
-
-async def root_post(request): # Testing routines, to be deleted
-    text = await request.text()
-    #print(text)
-    return web.Response(text=text)
 
 async def ore_data(request):
     #data = await request.json()
@@ -41,17 +34,18 @@ async def mining(request):
     #starship_ore += randf() + 0.1
 
 async def heartbeat(request):
+    print(users)
     return web.Response(text="OK")
 
 async def login(request):
     username = await request.text()
     if not username in users:
-        users[await request.text()] = {"starship_ore": 0}
+        users[username] = {"starship_ore": 0}
+    users[username]["last_login"] = time.time()
     return web.Response(text="logged")
 
+
 app = web.Application()
-app.router.add_get('/', handle)
-app.router.add_post('/', root_post)
 app.router.add_post('/login', login)
 app.router.add_get("/ore_data", ore_data)
 app.router.add_get("/mining", mining)
